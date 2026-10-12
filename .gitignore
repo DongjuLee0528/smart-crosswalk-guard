@@ -1,0 +1,26 @@
+# Local editor and OS files
+.DS_Store
+.idea/
+.vscode/
+
+# Python environments and generated files
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+build/
+dist/
+
+# Local settings and generated test data
+.env
+.env.*
+!.env.example
+*.log
+data/
+results/
+.agent-notes/
+/AGENTS.md
+/CLAUDE.md
