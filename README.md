@@ -13,9 +13,11 @@ A diorama prototype of an AI-assisted crosswalk guard. The repository currently 
 
 The [Notion project page](https://app.notion.com/p/3f22febccaee80819442f99852cba8d5) contains the design and implementation specification.
 
-The current demonstration settings are a 30-second vehicle-green phase (8-second minimum), a pedestrian request after 20 seconds of waiting, and a 2-second barrier descent. If a person is in front of a barrier, that barrier remains raised for the current cycle. The simulator accepts pedestrian, extension, and vehicle-stop requests. Its read-only status reports the current phase, remaining seconds, and a heartbeat counter that advances once per second when the real-time runner is active. Detection and barrier decisions are separate future work.
+The current demonstration settings are a 30-second vehicle-green phase (8-second minimum), a pedestrian request after 20 seconds of waiting, and a 2-second barrier descent. If a person is in front of a barrier, that barrier remains raised for the current cycle. The simulator accepts pedestrian, extension, and vehicle-stop requests. Its read-only status reports the current phase, remaining seconds, and a heartbeat counter that advances once per second when the real-time runner is active. `DecisionLogic.evaluate()` accepts synthetic waiting and crossing inputs, reads that status, and sends requests to the simulator. Camera detection and barrier decisions are separate future work.
 
-Run the software-only real-time simulator with `python3 -m app.traffic_runtime`. It prints the status each second; press Ctrl+C to stop. The runner can also be called with a `threading.Event` to stop it and an optional status callback.
+Run the software-only real-time simulator with `python3 -m app.traffic_runtime`. It prints the status each second; press Ctrl+C to stop. Supply synthetic inputs with `--waiting-count 3`, `--longest-wait-seconds 20`, or `--crossing`. The runner can also be called with a `threading.Event` to stop it and an optional status callback.
+
+The command-line runner calls `DecisionLogic.evaluate()` on each tick. The controller enforces the eight-second minimum green phase; crossing inputs can request a vehicle stop or extend the final all-red phase.
 
 Run the software tests with `python3 -m unittest discover -s tests`.
 
