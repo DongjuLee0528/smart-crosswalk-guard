@@ -1,4 +1,5 @@
 PHASE_SECONDS = {"A": 30, "B": 3, "C": 1, "D": 10, "E": 3, "F": 2}
+MIN_GREEN_SECONDS = 8
 SIGNALS = {
     "A": ("red", "green"),
     "B": ("red", "yellow"),
@@ -54,7 +55,7 @@ class TrafficController:
                 self._extension = 0
 
     def request_ped(self):
-        if self._phase != "A" or self._elapsed < 8:
+        if self._phase != "A" or self._elapsed < MIN_GREEN_SECONDS:
             return False
         self._phase = "B"
         self._elapsed = 0

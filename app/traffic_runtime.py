@@ -1,6 +1,8 @@
+import argparse
 import time
 from threading import Event
 
+from app.decision_logic import DecisionLogic
 from app.traffic_controller import TrafficController
 
 
@@ -10,16 +12,31 @@ def run_realtime(controller, stop_event, on_tick=None):
         elapsed = int(time.monotonic() - next_tick) + 1
         if elapsed < 1:
             continue
-        controller.advance(elapsed)
+        for _ in range(elapsed):
+            controller.advance()
+            if on_tick is not None:
+                on_tick(controller.status)
         next_tick += elapsed
-        if on_tick is not None:
-            on_tick(controller.status)
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Run the software-only traffic simulator")
+    parser.add_argument("--waiting-count", type=int, default=0)
+    parser.add_argument("--longest-wait-seconds", type=int, default=0)
+    parser.add_argument("--crossing", action="store_true")
+    args = parser.parse_args()
+    if args.waiting_count < 0 or args.longest_wait_seconds < 0:
+        parser.error("waiting inputs must be non-negative")
+
     controller = TrafficController()
+    decision = DecisionLogic(controller)
+
+    def on_tick(status):
+        decision.evaluate(args.waiting_count, args.longest_wait_seconds, args.crossing)
+        print(controller.status, flush=True)
+
     print(controller.status, flush=True)
     try:
-        run_realtime(controller, Event(), lambda status: print(status, flush=True))
+        run_realtime(controller, Event(), on_tick)
     except KeyboardInterrupt:
         pass
