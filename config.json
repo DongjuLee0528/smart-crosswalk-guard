@@ -1,0 +1,20 @@
+{
+  "waiting_count_threshold": 3,
+  "waiting_seconds_threshold": 20,
+  "min_green_seconds": 8,
+  "extension_step_seconds": 1,
+  "max_extension_seconds": 5,
+  "barrier_wait_seconds": 0,
+  "barrier_descent_seconds": 2,
+  "entry_confirmation_frames": 3,
+  "exit_confirmation_seconds": 2,
+  "waiting_presence_seconds": 2,
+  "voice_repeat_seconds": 5,
+  "roi": {
+    "waiting_north": [330, 20, 570, 90],
+    "waiting_south": [330, 510, 570, 580],
+    "warning_north": [330, 90, 570, 140],
+    "warning_south": [330, 460, 570, 510],
+    "crosswalk": [350, 140, 550, 460]
+  }
+}

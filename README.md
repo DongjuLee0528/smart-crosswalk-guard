@@ -19,6 +19,14 @@ Run the software-only real-time simulator with `python3 -m app.traffic_runtime`.
 
 The command-line runner calls `DecisionLogic.evaluate()` on each tick. The controller enforces the eight-second minimum green phase; crossing inputs can request a vehicle stop or extend the final all-red phase.
 
+## Configuration
+
+Edit `config.json` and restart the simulator to change the waiting-count and waiting-time thresholds, minimum vehicle green, pedestrian extension step and cap, barrier wait and descent times, entry and exit confirmation, waiting-person dwell time, voice repeat interval, or ROI coordinates. The same settings file is loaded by the traffic controller and decision logic. Use `--config path/to/settings.json` to run an experiment with another file without editing the default.
+
+ROI boxes use `[left, top, right, bottom]` pixel coordinates. The warning-zone horizontal bounds initially reuse the waiting-zone bounds because the specification does not fix them. All ROI coordinates need calibration after the camera position is fixed. The zero-second barrier wait means no extra delay before the specified two-second descent. Camera, barrier, and audio consumers are not implemented yet; their settings are loaded and validated for those later features.
+
+Invalid individual settings fall back to their defaults with a warning. A missing or malformed settings file stops startup so a configuration error is visible.
+
 Run the software tests with `python3 -m unittest discover -s tests`.
 
 ## License
