@@ -2,6 +2,7 @@ import argparse
 import time
 from threading import Event
 
+from app.config import load_settings
 from app.decision_logic import DecisionLogic
 from app.traffic_controller import TrafficController
 
@@ -24,11 +25,12 @@ if __name__ == "__main__":
     parser.add_argument("--waiting-count", type=int, default=0)
     parser.add_argument("--longest-wait-seconds", type=int, default=0)
     parser.add_argument("--crossing", action="store_true")
+    parser.add_argument("--config", help="path to a JSON settings file")
     args = parser.parse_args()
     if args.waiting_count < 0 or args.longest_wait_seconds < 0:
         parser.error("waiting inputs must be non-negative")
 
-    controller = TrafficController()
+    controller = TrafficController(load_settings(args.config) if args.config else None)
     decision = DecisionLogic(controller)
 
     def on_tick(status):
