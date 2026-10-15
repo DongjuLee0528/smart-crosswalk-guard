@@ -1,5 +1,7 @@
+from app.config import load_settings
+
+
 PHASE_SECONDS = {"A": 30, "B": 3, "C": 1, "D": 10, "E": 3, "F": 2}
-MIN_GREEN_SECONDS = 8
 SIGNALS = {
     "A": ("red", "green"),
     "B": ("red", "yellow"),
@@ -14,7 +16,8 @@ NEXT_PHASE = {"A": "B", "B": "C", "C": "D", "D": "E", "E": "F", "F": "A"}
 
 
 class TrafficController:
-    def __init__(self):
+    def __init__(self, settings=None):
+        self.settings = load_settings() if settings is None else settings
         self._phase = "A"
         self._elapsed = 0
         self._extension = 0
@@ -55,16 +58,17 @@ class TrafficController:
                 self._extension = 0
 
     def request_ped(self):
-        if self._phase != "A" or self._elapsed < MIN_GREEN_SECONDS:
+        if self._phase != "A" or self._elapsed < self.settings["min_green_seconds"]:
             return False
         self._phase = "B"
         self._elapsed = 0
         return True
 
     def request_extend(self):
-        if self._phase != "F" or self._extension >= 5:
+        step = self.settings["extension_step_seconds"]
+        if self._phase != "F" or self._extension + step > self.settings["max_extension_seconds"]:
             return False
-        self._extension += 1
+        self._extension += step
         return True
 
     def request_car_stop(self):
