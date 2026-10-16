@@ -1,6 +1,6 @@
 # smart-crosswalk-guard
 
-A diorama prototype of an AI-assisted crosswalk guard. The repository currently includes a software-only traffic-controller simulator. Camera processing and firmware have not been implemented.
+A diorama prototype of an AI-assisted crosswalk guard. The repository currently includes a software-only traffic-controller simulator and ROI classifier. Camera input, person detection, and firmware have not been implemented.
 
 ## Project Structure
 
@@ -26,6 +26,10 @@ Edit `config.json` and restart the simulator to change the waiting-count and wai
 ROI boxes use `[left, top, right, bottom]` pixel coordinates. The warning-zone horizontal bounds initially reuse the waiting-zone bounds because the specification does not fix them. All ROI coordinates need calibration after the camera position is fixed. The zero-second barrier wait means no extra delay before the specified two-second descent. Camera, barrier, and audio consumers are not implemented yet; their settings are loaded and validated for those later features.
 
 Invalid individual settings fall back to their defaults with a warning. A missing or malformed settings file stops startup so a configuration error is visible.
+
+## ROI Classification
+
+`RoiClassifier.update(detections, timestamp)` accepts one video frame as a mapping from stable person IDs to `[left, top, right, bottom]` bounding boxes and a monotonic timestamp in seconds. It returns confirmed person IDs mapped to ROI names. The box's bottom center is the foot point. A person enters a zone after three consecutive frames in that zone and leaves after two seconds without detection in any ROI. Both thresholds and all ROI boxes come from `config.json`. If boxes overlap, crosswalk takes priority, then warning, then waiting. The ROI coordinates are provisional until the camera and diorama are calibrated. This classifier currently uses synthetic detections; a camera and person tracker are not connected.
 
 Run the software tests with `python3 -m unittest discover -s tests`.
 
