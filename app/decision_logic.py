@@ -1,4 +1,4 @@
-from app.traffic_controller import MIN_GREEN_SECONDS, PHASE_SECONDS
+from app.traffic_controller import PHASE_SECONDS
 
 
 class DecisionLogic:
@@ -40,8 +40,11 @@ class DecisionLogic:
             return None
         if (
             phase == "A"
-            and status["remaining_seconds"] <= PHASE_SECONDS["A"] - MIN_GREEN_SECONDS
-            and (waiting_count >= 3 or longest_wait_seconds >= 20)
+            and status["remaining_seconds"] <= PHASE_SECONDS["A"] - self.controller.settings["min_green_seconds"]
+            and (
+                waiting_count >= self.controller.settings["waiting_count_threshold"]
+                or longest_wait_seconds >= self.controller.settings["waiting_seconds_threshold"]
+            )
         ):
             return self.controller.request_ped()
         return None
